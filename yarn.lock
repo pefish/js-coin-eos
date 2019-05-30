@@ -18,6 +18,20 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@pefish/js-error@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@pefish/js-error/-/js-error-0.0.5.tgz#be50104cb7e6cb115a31ccdc55dafcf09a65a4ec"
+  integrity sha512-Eypll4OykI0EWj61wx8/cVMVldGjiPJVic/KzK76z1RZiNN9Q2TF7DJif+qg7MBlGbJHAQZ77wIBv5x9fndxpw==
+
+"@pefish/js-node-assist@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@pefish/js-node-assist/-/js-node-assist-0.6.0.tgz#3c9b377c91c1fb91ef5bf1e6023b6cfd2eb4785f"
+  integrity sha512-IczCkklwLQaUz0H+m7r4D/ITe3BV50yZ2IkLC6cXfzHw/yybqmSpMyI44FaywVxMufyhRmFnWSfryd84+ratkw==
+  dependencies:
+    bignumber.js "^8.1.1"
+    p-js-assert "^0.0.1"
+    p-js-error "^0.0.4"
+
 "@types/chai@^4.1.7":
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
@@ -313,15 +327,6 @@ inherits@2, inherits@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
-
-js-node-assist@^0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/js-node-assist/-/js-node-assist-0.5.6.tgz#2c240ed56bacb2395047d271a5c7aeccfea9107f"
-  integrity sha512-NLMyvOfUv8rnPu2JKCIEM6VptbuOk8l1meKIV0ew5j9zzBHM1iXg6mVV6cPb8pYXuSnOxUCitSRjA6/1LZ7U3Q==
-  dependencies:
-    bignumber.js "^8.1.1"
-    p-js-assert "^0.0.1"
-    p-js-error "^0.0.4"
 
 js-tokens@^4.0.0:
   version "4.0.0"

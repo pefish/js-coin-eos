@@ -1,7 +1,7 @@
 /** @module */
-import 'js-node-assist'
+import '@pefish/js-node-assist'
 import ErrorHelper from 'p-js-error'
-import BaseEosLike from './base/base_eos_like'
+import BaseEosLike from './base/base_eos'
 import { Api, JsonRpc, Serialize } from 'eosjs'
 import eosEcc from 'eosjs-crypt'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
