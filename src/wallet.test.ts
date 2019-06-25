@@ -7,40 +7,8 @@ describe('EosWalletHelper', () => {
   let helper
 
   before(async () => {
-    helper = new EosWalletHelper(`https://eos.greymass.com`)
-  })
-
-  it('getTransaction', async () => {
-    try {
-      const result = await helper.getTransaction(`ceab577490196e9d284e0ad56bdaa3af8c7603181a3a007b5fe6759cff02b45e`)
-      // global.logger.error('result', result)
-      assert.strictEqual(result.id, `ceab577490196e9d284e0ad56bdaa3af8c7603181a3a007b5fe6759cff02b45e`)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getActions', async () => {
-    try {
-      const result = await helper.getActions(`zgeoswallets`)
-      // global.logger.error('result', result)
-      assert.strictEqual(result[`actions`].length, 1)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getChainInfo', async () => {
-    try {
-      const result = await helper.getChainInfo()
-      // global.logger.error('result', result)
-      assert.strictEqual(result.chain_id, `aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
+    helper = new EosWalletHelper()
+    await helper.initRemoteClient(`https://eos.greymass.com`)
   })
 
   it('signTxHex', async () => {
@@ -108,39 +76,6 @@ describe('EosWalletHelper', () => {
       )
       // global.logger.error('result', JSON.stringify(result))
       assert.strictEqual(!!result.txId, true)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getTokenBalance', async () => {
-    try {
-      const result = await helper.getTokenBalance('zggrouptoken', 'zgbusinesses', 'ZG')
-      // global.logger.error('result', result)
-      assert.strictEqual(result.gte_(0), true)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getChainId', async () => {
-    try {
-      const result = await helper.getChainId()
-      // global.logger.error('result', result)
-      assert.strictEqual(result, 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906')
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getTokenInfo', async () => {
-    try {
-      const result = await helper.getTokenInfo('zggrouptoken', 'ZG')
-      // global.logger.error('result', result)
-      assert.strictEqual(result.issuer, `zggrouptoken`)
     } catch (err) {
       global.logger.error(err)
       assert.throws(() => {}, err)
@@ -249,6 +184,7 @@ describe('EosWalletHelper', () => {
       assert.throws(() => {}, err)
     }
   })
+
 
 
 })

@@ -1,48 +1,47 @@
 import '@pefish/js-node-assist'
 import ErrorHelper from '@pefish/js-error'
 import BaseEosLike from './base/base_eos'
+import { Api, JsonRpc, Serialize } from 'eosjs'
+import fetch from 'node-fetch'
+import { TextDecoder, TextEncoder } from 'text-encoding'
 
 export default class EosRemoteHelper extends BaseEosLike {
-  _Lib: any
-  url: string
-  eos: any
-  _network: string
+  rpc: any
 
-  constructor (url, lib = null, network = 'mainnet') {
+  constructor (url) {
     super()
-    if (typeof url !== 'string') {
-      url = `${url['protocol']}://${url['host']}${url['port'] ? `:${url['port']}` : (url['protocol'] === `https` ? `:443` : `:80`)}${url['path'] || ''}`
-    }
-    this._Lib = lib || require('p_eos.js')
-    this.url = url
-    this._network = network
-  }
-
-  async init () {
-    this.eos = this._Lib({
-      chainId: this._network === 'mainnet' ? null : await this.getChainId(),  // 跟签名直接相关
-      keyProvider: [],
-      httpEndpoint: this.url,
-      expireInSeconds: 60,
-      broadcast: false,
-      verbose: false,
-      sign: false
-    })
-  }
-
-  async help (methodName) {
-    await this.eos[methodName]() // 不给参数，会打印用法
+    this.rpc = new JsonRpc(url, { fetch })
   }
 
   async getChainId () {
-    const result = await this._Lib({
-      httpEndpoint: this.url
-    }).getInfo({})
+    const result = await this.rpc.get_info({})
     return result['chain_id']
   }
 
+  async getTokenBalance (contractAccountName, accountName, tokenName) {
+    const result = await this.rpc.get_table_rows({
+      json: true,
+      code: contractAccountName,
+      scope: accountName,
+      table: 'accounts',
+      lower_bound: 0,
+      upper_bound: -1,
+      limit: 10,
+    })
+    if (result['rows'].length === 0) {
+      return '0'
+    }
+    for (const { balance } of result['rows']) {
+      const { amount, symbol, decimals } = this.decodeAmount(balance)
+      if (symbol === tokenName) {
+        return amount
+      }
+    }
+    return '0'
+  }
+
   async getInfo () {
-    return await this.eos.getInfo({})
+    return await this.rpc.get_info({})
   }
 
   /**
@@ -56,15 +55,11 @@ export default class EosRemoteHelper extends BaseEosLike {
   }
 
   async getBlock (blockNumOrId) {
-    return await this.eos.getBlock({
-      block_num_or_id: blockNumOrId
-    })
+    return await this.rpc.get_block(blockNumOrId)
   }
 
   async getAccount (accountName) {
-    return await this.eos.getAccount({
-      account_name: accountName
-    })
+    return await this.rpc.get_account(accountName)
   }
 
   /**
@@ -73,22 +68,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @returns {Promise<*>}
    */
   async getAbi (accountName) {
-    return await this.eos.getAbi({
-      account_name: accountName
-    })
-  }
-
-  /**
-   * 获取合约账户的代码
-   * @param accountName
-   * @param asWasm
-   * @returns {Promise<*>}
-   */
-  async getCode (accountName, asWasm = false) {
-    return await this.eos.getCode({
-      account_name: accountName,
-      code_as_wasm: asWasm
-    })
+    return await this.rpc.get_abi(accountName)
   }
 
   /**
@@ -102,8 +82,8 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param limit
    * @returns {Promise<*>}
    */
-  async getTableRows (contractAccountName, primaryKey, tableName, toJson, start = 0, end = -1, limit = 10) {
-    return await this.eos.getTableRows({
+  async getTableRows (contractAccountName, primaryKey, tableName, toJson: boolean, start = 0, end = -1, limit = 10) {
+    return await this.rpc.get_table_rows({
       scope: primaryKey,
       code: contractAccountName,
       table: tableName,
@@ -122,60 +102,15 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @returns {Promise<*>}
    */
   async getBalance (contractAccountName, accountName, symbol = 'EOS') {
-    const strArr = await this.eos.getCurrencyBalance({
-      code: contractAccountName,
-      account: accountName,
-      symbol
-    })
+    const strArr = await this.rpc.get_currency_balance(contractAccountName, accountName, symbol)
     if (strArr.length === 0) {
       return '0'
     }
     return strArr[0].removeLast_(symbol.length + 1).shiftedBy_(4)
   }
 
-  /**
-   * action转bin
-   * @param contractAccountName {string} 合约账户名
-   * @param actionName {string} 行为名
-   * @param params {object} 参数
-   * @returns {Promise<*>}
-   */
-  async abiJsonToBin (contractAccountName, actionName, params) {
-    const result = await this.eos.abiJsonToBin({
-      code: contractAccountName,
-      action: actionName,
-      args: params
-    })
-    if (!result || !result['binargs']) {
-      throw new ErrorHelper(`错误`)
-    }
-    return result['binargs']
-  }
-
-  async abiBinToJson (contractAccountName, actionName, bin) {
-    const result = await this.eos.abiBinToJson({
-      code: contractAccountName,
-      action: actionName,
-      binargs: bin
-    })
-    if (!result || !result['args']) {
-      throw new ErrorHelper(`错误`)
-    }
-    return result['args']
-  }
-
-  async getRequiredKeys (txObj, availableKeys) {
-    return await this.eos.abiBinToJson({
-      transaction: txObj,
-      available_keys: availableKeys
-    })
-  }
-
   async getCurrencyStats (contractAccountName, symbol) {
-    const result = await this.eos.getCurrencyStats({
-      code: contractAccountName,
-      symbol
-    })
+    const result = await this.rpc.get_currency_stats(contractAccountName, symbol)
     if (!result[symbol]) {
       throw new ErrorHelper(`错误`)
     }
@@ -183,36 +118,18 @@ export default class EosRemoteHelper extends BaseEosLike {
   }
 
   async getProducers (start = 0, limit = 0, toJson = false) {
-    return await this.eos.getProducers({
+    return await this.rpc.get_producers({
       lower_bound: start,
       limit,
       json: toJson
     })
   }
 
-  async pushBlock (timestamp, producer, confirmed, previous, transaction_mroot, action_mroot, version, new_producers, header_extensions, producer_signature, transactions, block_extensions) {
-    return await this.eos.pushBlock({
-      timestamp,
-      producer,
-      confirmed,
-      previous,
-      transaction_mroot,
-      action_mroot,
-      version,
-      new_producers,
-      header_extensions,
-      producer_signature,
-      transactions,
-      block_extensions
+  async pushTransaction (signatures: Array<string>, txToSend: Uint8Array) {
+    return await this.rpc.push_transaction({
+      signatures,
+      serializedTransaction: txToSend
     })
-  }
-
-  async pushTransaction (txObj) {
-    return await this.eos.pushTransaction(txObj)
-  }
-
-  async pushTransactions (txObjs) {
-    return await this.eos.pushTransactions(txObjs)
   }
 
   /**
@@ -223,17 +140,11 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @returns {Promise<void>}
    */
   async getActions (accountName, pos = 0, offset = 0) {
-    return await this.eos.getActions({
-      pos,
-      offset,
-      account_name: accountName
-    })
+    return await this.rpc.history_get_actions(accountName, pos, offset)
   }
 
   async getTransaction (txHash) {
-    return await this.eos.getTransaction({
-      id: txHash,
-    })
+    return await this.rpc.history_get_transaction(txHash)
   }
 
   /**
@@ -242,7 +153,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @returns {Promise<*>}
    */
   async getKeyAccounts (publicKey) {
-    const result = await this.eos.getKeyAccounts({
+    const result = await this.rpc.history_get_key_accounts({
       public_key: publicKey,
     })
     if (!result['account_names']) {
@@ -252,7 +163,7 @@ export default class EosRemoteHelper extends BaseEosLike {
   }
 
   async getControlledAccounts (controllingAccount) {
-    return await this.eos.getControlledAccounts({
+    return await this.rpc.history_get_controlled_accounts({
       controlling_account: controllingAccount,
     })
   }
