@@ -8,7 +8,7 @@ import { TextDecoder, TextEncoder } from 'text-encoding'
 import crypto from 'crypto'
 import EosRemoteHelper from './remote'
 
-export default class EosWalletHelperV1 extends BaseEosLike {
+export default class EosWalletHelper extends BaseEosLike {
 
   privateKey: string
   remoteClient: EosRemoteHelper

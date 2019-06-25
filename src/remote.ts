@@ -7,9 +7,11 @@ import { TextDecoder, TextEncoder } from 'text-encoding'
 
 export default class EosRemoteHelper extends BaseEosLike {
   rpc: any
+  url: string
 
   constructor (url) {
     super()
+    this.url = url
     this.rpc = new JsonRpc(url, { fetch })
   }
 
