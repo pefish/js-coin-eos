@@ -22,17 +22,6 @@ describe('EosRemoteHelper', () => {
     }
   })
 
-  it('getBalance', async () => {
-    try {
-      const result = await helper.getBalance('eosio.token', 'withdraw', 'SYS')
-      // global.logger.error('result', result)
-      assert.strictEqual(result, `0`)
-    } catch (err) {
-      global.logger.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
   it('getChainId', async () => {
     try {
       const result = await helper.getChainId()
@@ -121,9 +110,9 @@ describe('EosRemoteHelper', () => {
     }
   })
 
-  it('getBalance', async () => {
+  it('getCurrencyBalance', async () => {
     try {
-      const result = await helper.getBalance('eosio.token', 'laijiyong123')
+      const result = await helper.getCurrencyBalance('eosio.token', 'laijiyong123')
       // logger.error('result', result)
       assert.strictEqual(result.add_(1).gt_(0), true)
     } catch (err) {

@@ -16,16 +16,16 @@ export default class EosWalletHelper extends BaseEosLike {
   api: Api
   chainId: string
 
-  constructor (chainId = `aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`) {
+  constructor (chainId: string = `aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`) {
     super()
     this.chainId = chainId
   }
 
-  initRemoteClient (url: string) {
+  initRemoteClient (url: string): void {
     this.remoteClient = new EosRemoteHelper(url)
   }
 
-  installPrivateKey (privateKey) {
+  installPrivateKey (privateKey: string): void {
     this.privateKey = privateKey
     this.sigProvider = new JsSignatureProvider([privateKey])
     this.api = new Api({
@@ -42,7 +42,7 @@ export default class EosWalletHelper extends BaseEosLike {
    * @param txObj {object} action被编码后的明文交易
    * @returns {Promise<*>}
    */
-  async signTxObjForSig(txObj) {
+  async signTxObjForSig(txObj: any): Promise<string> {
     const data = await this.sigProvider.sign({
       chainId: this.chainId,
       requiredKeys: [this.getPubkeyFromWif(this.privateKey)],
@@ -52,11 +52,11 @@ export default class EosWalletHelper extends BaseEosLike {
     return data[`signatures`][0]
   }
 
-  isPublicKey (str) {
+  isPublicKey (str: string): boolean {
     return eosEcc.isValidPublic(str)
   }
 
-  getAllBySeedAndIndex(seed, index) {
+  getAllBySeedAndIndex(seed: string, index: number): any {
     const privateKeyObj = eosEcc.PrivateKey.fromSeed(seed + index)
     return {
       seed,
@@ -67,12 +67,12 @@ export default class EosWalletHelper extends BaseEosLike {
     }
   }
 
-  getPubkeyFromWif(wif) {
+  getPubkeyFromWif(wif: string): string {
     const privateKeyObj = eosEcc.PrivateKey.fromString(wif)
     return privateKeyObj.toPublic().toString()
   }
 
-  decryptMemo (toWif, fromPKey, encryptedMemo, nonce) {
+  decryptMemo (toWif: string, fromPKey: string, encryptedMemo: string, nonce: number): string {
     return eosEcc.Aes.decryptWithoutChecksum(
       toWif,
       fromPKey,
@@ -89,7 +89,7 @@ export default class EosWalletHelper extends BaseEosLike {
    * @param nonce {number}
    * @returns {{nonce, message: *, checksum}}
    */
-  encryptMemo (fromWif, toPKey, memo, nonce = null) {
+  encryptMemo (fromWif: string, toPKey: string, memo: string, nonce: number = null): any {
     const result = eosEcc.Aes.encrypt(
       fromWif,
       toPKey,
@@ -108,25 +108,25 @@ export default class EosWalletHelper extends BaseEosLike {
    * @param actions {array} 编码后的action数组
    * @returns {Promise<Promise<Action[]> | *>}
    */
-  async decodeActions (actions) {
+  async decodeActions (actions: Array<any>): Promise<any> {
     return this.api.deserializeActions(actions)
   }
 
-  async encodeActions (actions) {
-    return this.api.serializeActions(actions)
+  async encodeActions (actions: Array<any>): Promise<any> {
+    return await this.api.serializeActions(actions)
   }
 
-  getHexFromTxObj (txObj) {
+  getHexFromTxObj (txObj: any): string {
     const serializedTransaction = this.api.serializeTransaction(txObj)
     return Serialize.arrayToHex(serializedTransaction)
   }
 
-  getTxObjFromHex (hex) {
+  getTxObjFromHex (hex: string): any {
     const serializedTransaction = Serialize.hexToUint8Array(hex)
     return this.api.deserializeTransaction(serializedTransaction)
   }
 
-  async buildTransaction(actions, expirationSecond = 300, sign = false, broadcast = false) {
+  async buildTransaction(actions: Array<any>, expirationSecond: number = 300, sign: boolean = false, broadcast: boolean = false): Promise<any> {
     const trx = await this.api.transact({
       actions
     }, {
@@ -145,7 +145,7 @@ export default class EosWalletHelper extends BaseEosLike {
     }
   }
 
-  serializeTransaction (txObj: object) {
+  serializeTransaction (txObj: object): any {
     return this.api.serializeTransaction(txObj)
   }
 }
