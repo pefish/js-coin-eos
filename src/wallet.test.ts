@@ -95,6 +95,17 @@ describe('EosWalletHelper', () => {
     }
   })
 
+  it('decodeAmount', async () => {
+    try {
+      const result = await helper.encodeAmount(`1`, "EOS", 4)
+      // global.logger.error('result', result)
+      assert.strictEqual(result, '0.0001 EOS')
+    } catch (err) {
+      global.logger.error(err)
+      assert.throws(() => {}, err)
+    }
+  })
+
   it('decryptMemo', async () => {
     try {
       const nonce = '1234567'
