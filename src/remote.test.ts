@@ -69,8 +69,8 @@ describe('EosRemoteHelper', () => {
   it('getLatestHeight', async () => {
     try {
       const result = await helper.getLatestHeight()
-      // logger.error('result', result)
-      assert.strictEqual(result.gt_(0), true)
+      // global.logger.error('result', result)
+      assert.strictEqual(result.toString().gt_(0), true)
     } catch (err) {
       global.logger.error(err)
       assert.throws(() => {}, err)

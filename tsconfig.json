@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "typeRoots": [
       "node_modules/@types",
-      "node_modules/js-node-assist/types"
+      "node_modules/@pefish"
     ]
   },
   "include": [

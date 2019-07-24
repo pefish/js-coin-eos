@@ -1,28 +1,26 @@
 {
   "name": "@pefish/js-coin-eos",
-  "version": "0.0.4",
-  "main": "./lib/wallet.js",
-  "types": "./types/*.d.ts",
+  "version": "0.0.5",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
-    "test": "mocha --timeout 20000 --require ts-node/register",
-    "build": "tsc && yarn tslint",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "mocha --timeout 20000 --require ts-node/register src/**/*.test.ts",
+    "t": "mocha --timeout 20000 --require ts-node/register",
+    "build": "rm -rf types lib && tsc",
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@pefish/js-error": "^0.0.5",
-    "@pefish/js-node-assist": "^0.6.0",
+    "@pefish/js-error": "^0.1.1",
+    "@pefish/js-node-assist": "^0.6.6",
     "eosjs": "^20.0.0-beta3",
     "eosjs-crypt": "^4.0.3",
     "node-fetch": "^2.3.0",
     "text-encoding": "^0.7.0"
   },
   "devDependencies": {
-    "@pefish/js-util-starter": "^0.0.4",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.13.7",
-    "fibos.js": "^0.3.6",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"

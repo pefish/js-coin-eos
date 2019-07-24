@@ -1,9 +1,8 @@
 import '@pefish/js-node-assist'
 import ErrorHelper from '@pefish/js-error'
 import BaseEosLike from './base/base_eos'
-import { Api, JsonRpc, Serialize } from 'eosjs'
+import { JsonRpc } from 'eosjs'
 import fetch from 'node-fetch'
-import { TextDecoder, TextEncoder } from 'text-encoding'
 
 export default class EosRemoteHelper extends BaseEosLike {
   rpc: any

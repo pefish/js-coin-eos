@@ -1,13 +1,13 @@
 import '@pefish/js-node-assist'
 import assert from 'assert'
-import EosWalletHelper from './wallet'
+import { EosWallet } from './index'
 
 describe('EosWalletHelper', () => {
 
   let helper
 
   before(async () => {
-    helper = new EosWalletHelper()
+    helper = new EosWallet()
     await helper.initRemoteClient(`https://eos.greymass.com`)
   })
 
