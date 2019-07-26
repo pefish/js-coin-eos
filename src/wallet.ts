@@ -7,6 +7,7 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
 import { TextDecoder, TextEncoder } from 'text-encoding'
 import crypto from 'crypto'
 import EosRemoteHelper from './remote'
+import ErrorHelper from '@pefish/js-error';
 
 export default class EosWalletHelper extends BaseEosLike {
 
@@ -23,9 +24,20 @@ export default class EosWalletHelper extends BaseEosLike {
 
   initRemoteClient (url: string): void {
     this.remoteClient = new EosRemoteHelper(url)
+    this.api = new Api({
+      chainId: this.chainId,
+      rpc: this.remoteClient.rpc,
+      signatureProvider: null,
+      textDecoder: new TextDecoder(),
+      textEncoder: new TextEncoder()
+    })
   }
 
   installPrivateKey (privateKey: string): void {
+    if (!this.remoteClient) {
+      throw new ErrorHelper(`please init remote client first`)
+    }
+
     this.privateKey = privateKey
     this.sigProvider = new JsSignatureProvider([privateKey])
     this.api = new Api({
@@ -43,6 +55,10 @@ export default class EosWalletHelper extends BaseEosLike {
    * @returns {Promise<*>}
    */
   async signTxObjForSig(txObj: any): Promise<string> {
+    if (!this.api) {
+      throw new ErrorHelper(`please install private key first`)
+    }
+
     const data = await this.sigProvider.sign({
       chainId: this.chainId,
       requiredKeys: [this.getPubkeyFromWif(this.privateKey)],
@@ -127,6 +143,9 @@ export default class EosWalletHelper extends BaseEosLike {
   }
 
   async buildTransaction(actions: Array<any>, expirationSecond: number = 300, sign: boolean = false, broadcast: boolean = false): Promise<any> {
+    if (!this.api && sign === true) {
+      throw new ErrorHelper(`please install private key first`)
+    }
     const trx = await this.api.transact({
       actions
     }, {
