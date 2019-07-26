@@ -1,9 +1,9 @@
 /** @module */
 import '@pefish/js-node-assist'
 import BaseEosLike from './base/base_eos'
-import { Api, JsonRpc, Serialize } from 'eosjs'
+import { Api, JsonRpc, Serialize } from 'pefish-eosjs'
 import eosEcc from 'pefish-eosjs-ecc'
-import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
+import { JsSignatureProvider } from 'pefish-eosjs/dist/eosjs-jssig'
 import { TextDecoder, TextEncoder } from 'text-encoding'
 import crypto from 'crypto'
 import EosRemoteHelper from './remote'

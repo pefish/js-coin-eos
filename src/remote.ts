@@ -1,7 +1,7 @@
 import '@pefish/js-node-assist'
 import ErrorHelper from '@pefish/js-error'
 import BaseEosLike from './base/base_eos'
-import { JsonRpc } from 'eosjs'
+import { JsonRpc } from 'pefish-eosjs'
 import fetch from 'node-fetch'
 
 export default class EosRemoteHelper extends BaseEosLike {
