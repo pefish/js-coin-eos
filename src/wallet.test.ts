@@ -4,18 +4,40 @@ import { EosWallet } from './index'
 
 describe('EosWalletHelper', () => {
 
-  let helper
+  let helper: EosWallet
 
   before(async () => {
     helper = new EosWallet()
     await helper.initRemoteClient(`https://eos.greymass.com`)
   })
 
-  it('getPubkeyFromWif', async () => {
+  it('signMsg', async () => {
     try {
-      const result = await helper.getPubkeyFromWif('5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP')
+      const result = await helper.signMsg('test', `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`)
       // global.logger.error('result', result)
-      assert.strictEqual(result, `EOS5G1ixaCHP3vNMhQsKPMnwSnjCrfYqLEZB87wDmVefQ7bcjw7ir`)
+      assert.strictEqual(result, `SIG_K1_KctnL5bM78p3Hq8PbCTUiH2UztG5rwLzcn13T8iwGxGdfScUiBn4C6Ki4Pta9bq6Dn6QVNtErXaUXsH6MU8npGBPhFBjxf`)
+    } catch (err) {
+      global.logger.error(err)
+      assert.throws(() => {}, err)
+    }
+  })
+
+  it('verifyMsg', async () => {
+    try {
+      const result = await helper.verifyMsg('SIG_K1_KctnL5bM78p3Hq8PbCTUiH2UztG5rwLzcn13T8iwGxGdfScUiBn4C6Ki4Pta9bq6Dn6QVNtErXaUXsH6MU8npGBPhFBjxf', `test`,`EOS5G1ixaCHP3vNMhQsKPMnwSnjCrfYqLEZB87wDmVefQ7bcjw7ir`)
+      // global.logger.error('result', result)
+      assert.strictEqual(result, true)
+    } catch (err) {
+      global.logger.error(err)
+      assert.throws(() => {}, err)
+    }
+  })
+
+  it('getAllByPrivateKey', async () => {
+    try {
+      const result = await helper.getAllByPrivateKey('5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP')
+      // global.logger.error('result', result)
+      assert.strictEqual(result.publicKey, `EOS5G1ixaCHP3vNMhQsKPMnwSnjCrfYqLEZB87wDmVefQ7bcjw7ir`)
     } catch (err) {
       global.logger.error(err)
       assert.throws(() => {}, err)
@@ -94,7 +116,7 @@ describe('EosWalletHelper', () => {
 
   it('decryptMemo', async () => {
     try {
-      const nonce = '1234567'
+      const nonce = 1234567
       const result = await helper.decryptMemo('5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP', 'EOS6fzek8UfAsdDzgdHGGx5FUGHBp7gZnru5tkT7yivFTsdP74CpX', '224aae5a00af2aff608488bebb629873', nonce)
       // logger.error('result', result)
       assert.strictEqual(result, 'test')
@@ -106,7 +128,7 @@ describe('EosWalletHelper', () => {
 
   it('encryptMemo', async () => {
     try {
-      const nonce = '1234567'
+      const nonce = 1234567
       const result = await helper.encryptMemo('5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP', 'EOS6fzek8UfAsdDzgdHGGx5FUGHBp7gZnru5tkT7yivFTsdP74CpX', 'test', nonce)
       // logger.error('result', result)
       assert.strictEqual(result['message'], '224aae5a00af2aff608488bebb629873')
