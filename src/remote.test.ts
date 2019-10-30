@@ -140,11 +140,11 @@ describe('EosRemoteHelper', () => {
   it('getTokenBalance', async () => {
     try {
       const result = await helper.getTokenBalance(
-        'eosio.token',
-        'laijiyong123',
-        'EOS',
+        'htyhty111222',
+        'zgeosdeposit',
+        'RSC',
       )
-      // global.logger.error('result', result)
+      global.logger.error('result', result)
       assert.strictEqual(result.gt_(0), true)
     } catch (err) {
       global.logger.error(err)
