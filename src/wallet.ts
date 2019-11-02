@@ -172,12 +172,12 @@ export default class EosWalletHelper extends BaseEosLike {
   }
 
   async buildTransaction(actions: Array<any>, expirationSecond: number = 300, sign: boolean = false, broadcast: boolean = false): Promise<{
-    signatures: string[],
+    signatures?: string[],
     txId: string,
-    txObj: {[x: string]: any},
-    serializedTx: Uint8Array,
-    txHex: string,
-    tx: any
+    txObj?: {[x: string]: any},
+    serializedTx?: Uint8Array,
+    txHex?: string,
+    tx?: any
   }> {
     if (!this.api && sign === true) {
       throw new ErrorHelper(`please install private key first`)
@@ -190,6 +190,11 @@ export default class EosWalletHelper extends BaseEosLike {
         broadcast,
         sign
       })
+    if (broadcast === true) {
+      return {
+        txId: trx.transaction_id,
+      }
+    }
     const txHex = Serialize.arrayToHex(trx[`serializedTransaction`])
     return {
       signatures: trx[`signatures`],
