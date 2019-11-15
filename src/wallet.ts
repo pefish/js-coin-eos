@@ -11,7 +11,6 @@ import ErrorHelper from '@pefish/js-error';
 
 export default class EosWalletHelper extends BaseEosLike {
 
-  privateKey: string
   remoteClient: EosRemoteHelper
   sigProvider: JsSignatureProvider
   api: Api
@@ -33,13 +32,12 @@ export default class EosWalletHelper extends BaseEosLike {
     })
   }
 
-  installPrivateKey(privateKey: string): void {
+  installPrivateKey(privateKeys: string[]): void {
     if (!this.remoteClient) {
       throw new ErrorHelper(`please init remote client first`)
     }
 
-    this.privateKey = privateKey
-    this.sigProvider = new JsSignatureProvider([privateKey])
+    this.sigProvider = new JsSignatureProvider(privateKeys)
     this.api = new Api({
       chainId: this.chainId,
       rpc: this.remoteClient.rpc,
@@ -54,18 +52,18 @@ export default class EosWalletHelper extends BaseEosLike {
    * @param txObj {object} action被编码后的明文交易
    * @returns {Promise<*>}
    */
-  async signTxObjForSig(txObj: {[x: string]: any}): Promise<string> {
+  async signTxObjForSig(txObj: {[x: string]: any}): Promise<string[]> {
     if (!this.api) {
       throw new ErrorHelper(`please install private key first`)
     }
 
     const data = await this.sigProvider.sign({
       chainId: this.chainId,
-      requiredKeys: [this.getAllByPrivateKey(this.privateKey).publicKey],
+      requiredKeys: this.sigProvider.availableKeys,
       serializedTransaction: this.api.serializeTransaction(txObj),
       abis: null,
     })
-    return data[`signatures`][0]
+    return data[`signatures`]
   }
 
   isPublicKey(str: string): boolean {

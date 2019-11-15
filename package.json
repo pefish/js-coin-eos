@@ -10,8 +10,8 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@pefish/js-error": "^0.1.1",
-    "@pefish/js-node-assist": "^0.6.9",
+    "@pefish/js-error": "^0.1.2",
+    "@pefish/js-node-assist": "^0.6.11",
     "node-fetch": "^2.3.0",
     "pefish-eosjs": "^20.0.0",
     "pefish-eosjs-ecc": "^4.0.7",
