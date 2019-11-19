@@ -3,23 +3,23 @@ import ErrorHelper from '@pefish/js-error'
 import BaseEosLike from './base/base_eos'
 import { JsonRpc } from 'pefish-eosjs'
 import fetch from 'node-fetch'
-
+import HttpRequest from '@pefish/js-util-httprequest'
 export default class EosRemoteHelper extends BaseEosLike {
   rpc: any
   url: string
 
-  constructor (url: string) {
+  constructor(url: string) {
     super()
     this.url = url
     this.rpc = new JsonRpc(url, { fetch })
   }
 
-  async getChainId (): Promise<string> {
+  async getChainId(): Promise<string> {
     const result = await this.rpc.get_info({})
     return result['chain_id']
   }
 
-  async getTokenBalance (contractAccountName: string, accountName: string, tokenName: string): Promise<string> {
+  async getTokenBalance(contractAccountName: string, accountName: string, tokenName: string): Promise<string> {
     const result = await this.rpc.get_table_rows({
       json: true,
       code: contractAccountName,
@@ -41,7 +41,7 @@ export default class EosRemoteHelper extends BaseEosLike {
     return '0'
   }
 
-  async getInfo (): Promise<any> {
+  async getInfo(): Promise<any> {
     return await this.rpc.get_info({})
   }
 
@@ -50,16 +50,16 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param isIrreversible {boolean} 是不是不可回滚的
    * @returns {Promise<*>}
    */
-  async getLatestHeight (isIrreversible: boolean = true): Promise<number> {
+  async getLatestHeight(isIrreversible: boolean = true): Promise<number> {
     const result = await this.getInfo()
     return isIrreversible === true ? result['last_irreversible_block_num'] : result['head_block_number']
   }
 
-  async getBlock (blockNumOrId: number): Promise<any> {
+  async getBlock(blockNumOrId: number): Promise<any> {
     return await this.rpc.get_block(blockNumOrId)
   }
 
-  async getAccount (accountName: string): Promise<any> {
+  async getAccount(accountName: string): Promise<any> {
     return await this.rpc.get_account(accountName)
   }
 
@@ -68,7 +68,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param accountName
    * @returns {Promise<*>}
    */
-  async getAbi (accountName: string): Promise<any> {
+  async getAbi(accountName: string): Promise<any> {
     return await this.rpc.get_abi(accountName)
   }
 
@@ -83,7 +83,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param limit
    * @returns {Promise<*>}
    */
-  async getTableRows (contractAccountName: string, primaryKey: string, tableName: string, toJson: boolean, start: number = 0, end: number = -1, limit: number = 10): Promise<any> {
+  async getTableRows(contractAccountName: string, primaryKey: string, tableName: string, toJson: boolean, start: number = 0, end: number = -1, limit: number = 10): Promise<any> {
     return await this.rpc.get_table_rows({
       scope: primaryKey,
       code: contractAccountName,
@@ -102,7 +102,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param symbol {string} 要查询的币种
    * @returns {Promise<*>}
    */
-  async getCurrencyBalance (contractAccountName: string, accountName: string, symbol: string = 'EOS'): Promise<string> {
+  async getCurrencyBalance(contractAccountName: string, accountName: string, symbol: string = 'EOS'): Promise<string> {
     const strArr = await this.rpc.get_currency_balance(contractAccountName, accountName, symbol)
     if (strArr.length === 0) {
       return '0'
@@ -110,7 +110,7 @@ export default class EosRemoteHelper extends BaseEosLike {
     return strArr[0].removeLast_(symbol.length + 1).shiftedBy_(4)
   }
 
-  async getCurrencyStats (contractAccountName: string, symbol: string): Promise<any> {
+  async getCurrencyStats(contractAccountName: string, symbol: string): Promise<any> {
     const result = await this.rpc.get_currency_stats(contractAccountName, symbol)
     if (!result[symbol]) {
       throw new ErrorHelper(`错误`)
@@ -118,7 +118,7 @@ export default class EosRemoteHelper extends BaseEosLike {
     return result[symbol]
   }
 
-  async getProducers (start: number = 0, limit: number = 0, toJson: boolean = false): Promise<any> {
+  async getProducers(start: number = 0, limit: number = 0, toJson: boolean = false): Promise<any> {
     return await this.rpc.get_producers({
       lower_bound: start,
       limit,
@@ -126,7 +126,7 @@ export default class EosRemoteHelper extends BaseEosLike {
     })
   }
 
-  async pushTransaction (signatures: Array<string>, txToSend: Uint8Array): Promise<any> {
+  async pushTransaction(signatures: Array<string>, txToSend: Uint8Array): Promise<any> {
     return await this.rpc.push_transaction({
       signatures,
       serializedTransaction: txToSend
@@ -140,11 +140,49 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param offset {number} 正表示从pos处向后多取 offset 个，负表示从pos处向前多取 offset 个
    * @returns {Promise<void>}
    */
-  async getActions (accountName: string, pos: number = 0, offset: number = 0): Promise<any> {
+  async getActions(accountName: string, pos: number = 0, offset: number = 0): Promise<any> {
     return await this.rpc.history_get_actions(accountName, pos, offset)
   }
 
-  async getTransaction (txHash: string): Promise<any> {
+  async getActionsV2(endpoint: string, opts: {
+    account: string,
+    skip?: number,
+    limit?: number,
+    sort?: string,
+  }): Promise<{
+    actions: {
+      act: {
+        authorization: {actor: string, permission: string}[],
+        data: {
+          from: string,
+          to: string,
+          amount: number,
+          symbol: string,
+          memo: string,
+        },
+        account: string,
+        name: string,
+      },
+      [`@timestamp`]: string,
+      block_num: number,
+      producer: string,
+      trx_id: string,
+      global_sequence: number,
+      notified: string[],
+    }[],
+    [x: string]: any,
+  }> {
+    return await HttpRequest.get(`${endpoint}/v2/history/get_actions`, {
+      params: {
+        account: opts.account,
+        skip: opts.skip || 0,
+        limit: opts.limit || 10,
+        sort: opts.sort || `desc`,
+      }
+    })
+  }
+
+  async getTransaction(txHash: string): Promise<any> {
     return await this.rpc.history_get_transaction(txHash)
   }
 
@@ -153,7 +191,7 @@ export default class EosRemoteHelper extends BaseEosLike {
    * @param publicKey
    * @returns {Promise<*>}
    */
-  async getKeyAccounts (publicKey: string): Promise<any> {
+  async getKeyAccounts(publicKey: string): Promise<any> {
     const result = await this.rpc.history_get_key_accounts({
       public_key: publicKey,
     })
@@ -163,7 +201,7 @@ export default class EosRemoteHelper extends BaseEosLike {
     return result['account_names']
   }
 
-  async getControlledAccounts (controllingAccount: string): Promise<any> {
+  async getControlledAccounts(controllingAccount: string): Promise<any> {
     return await this.rpc.history_get_controlled_accounts({
       controlling_account: controllingAccount,
     })

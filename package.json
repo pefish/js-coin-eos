@@ -1,6 +1,6 @@
 {
   "name": "@pefish/js-coin-eos",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@pefish/js-error": "^0.1.2",
-    "@pefish/js-node-assist": "^0.6.11",
+    "@pefish/js-node-assist": "^0.6.12",
+    "@pefish/js-util-httprequest": "^0.1.2",
     "node-fetch": "^2.3.0",
     "pefish-eosjs": "^20.0.0",
     "pefish-eosjs-ecc": "^4.0.7",

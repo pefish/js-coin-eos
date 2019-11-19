@@ -14,10 +14,10 @@ describe('EosWalletHelper', () => {
   it('signMsg', async () => {
     try {
       const result = await helper.signMsg('test', `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`)
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result, `SIG_K1_KctnL5bM78p3Hq8PbCTUiH2UztG5rwLzcn13T8iwGxGdfScUiBn4C6Ki4Pta9bq6Dn6QVNtErXaUXsH6MU8npGBPhFBjxf`)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -25,10 +25,10 @@ describe('EosWalletHelper', () => {
   it('verifyMsg', async () => {
     try {
       const result = await helper.verifyMsg('SIG_K1_KctnL5bM78p3Hq8PbCTUiH2UztG5rwLzcn13T8iwGxGdfScUiBn4C6Ki4Pta9bq6Dn6QVNtErXaUXsH6MU8npGBPhFBjxf', `test`,`EOS5G1ixaCHP3vNMhQsKPMnwSnjCrfYqLEZB87wDmVefQ7bcjw7ir`)
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result, true)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -36,10 +36,10 @@ describe('EosWalletHelper', () => {
   it('getAllByPrivateKey', async () => {
     try {
       const result = await helper.getAllByPrivateKey('5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP')
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result.publicKey, `EOS5G1ixaCHP3vNMhQsKPMnwSnjCrfYqLEZB87wDmVefQ7bcjw7ir`)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -60,10 +60,10 @@ describe('EosWalletHelper', () => {
           }
         ]
       )
-      // global.logger.error('result', JSON.stringify(result))
+      // console.error('result', JSON.stringify(result))
       assert.strictEqual(result[0].data.account, `myloveeos123`)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -76,7 +76,7 @@ describe('EosWalletHelper', () => {
       assert.strictEqual(result['decimals'], 4)
       assert.strictEqual(result['amount'], '100000')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -84,10 +84,10 @@ describe('EosWalletHelper', () => {
   it('decodeAmount', async () => {
     try {
       const result = await helper.encodeAmount(`1`, `EOS`, 4)
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result, '0.0001 EOS')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -99,7 +99,7 @@ describe('EosWalletHelper', () => {
       // logger.error('result', result)
       assert.strictEqual(result, 'test')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -111,7 +111,7 @@ describe('EosWalletHelper', () => {
       // logger.error('result', result)
       assert.strictEqual(result['message'], '224aae5a00af2aff608488bebb629873')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -119,10 +119,10 @@ describe('EosWalletHelper', () => {
   it('getAllBySeedAndIndex', async () => {
     try {
       const result = await helper.getAllBySeedAndIndex('da2a48a1b9fbade07552281143814b3cd7ba4b53a7de5241439417b9bb540e229c45a30b0ce32174aaccc80072df7cbdff24f0c0ae327cd5170d1f276b890173', 0)
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result['privateKey'], '5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -137,7 +137,7 @@ describe('EosWalletHelper', () => {
       // logger.error('result', JSON.stringify(result))
       assert.strictEqual(result1, false)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -145,10 +145,10 @@ describe('EosWalletHelper', () => {
   it('getTxObjFromHex', async () => {
     try {
       const result = helper.getTxObjFromHex('EDD9475C06804D0500FD0000000001309D694825875B56000000572D3CCDCD01304460937AF79C8900000000A8ED323229304460937AF79C893044C054A94DA3971027000000000000044545544800000008686168617465737400')
-      // global.logger.error('result', JSON.stringify(result))
+      // console.error('result', JSON.stringify(result))
       assert.strictEqual(result.actions.length, 1)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -174,10 +174,10 @@ describe('EosWalletHelper', () => {
           }
         ], 60 * 60
       )
-      // global.logger.error('result', JSON.stringify(result))
+      // console.error('result', JSON.stringify(result))
       assert.strictEqual(result.txObj.actions.length, 1)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
@@ -188,10 +188,10 @@ describe('EosWalletHelper', () => {
       const result = await helper.signTxObjForSig(
         JSON.parse(`{"expiration":"2019-01-22T02:20:42.000","ref_block_num":26826,"ref_block_prefix":1912720944,"max_net_usage_words":0,"max_cpu_usage_ms":0,"delay_sec":0,"context_free_actions":[],"actions":[{"account":"eosio.token","name":"transfer","authorization":[{"actor":"laijiyong123","permission":"active"}],"data":"A026FD95DE54AB49304460937AF79C89C05701000000000004454F5300000000046D616D6F"}],"transaction_extensions":[]}`)
         )
-      // global.logger.error('result', result)
+      // console.error('result', result)
       assert.strictEqual(result[0], `SIG_K1_JzxVp1CdrFDRYJfTTbARaNgvzSYSevuFY1Q4oxKNtfWgNbByzTC3iv3AURcoHN9rqpD1TEp6b4m2d6qan7iSQvXh1LAWvz`)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {}, err)
     }
   })
