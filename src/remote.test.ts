@@ -35,41 +35,6 @@ describe('EosRemoteHelper', () => {
     }
   })
 
-  it('getTransaction', async () => {
-    try {
-      const result = await helper.getTransaction('9c323cdf299bda9b76a294dd72fc5498e7a07054da6e47c79390ebc2a669e181')
-      // logger.error('result', JSON.stringify(result))
-      assert.strictEqual(result['id'], '9c323cdf299bda9b76a294dd72fc5498e7a07054da6e47c79390ebc2a669e181')
-    } catch (err) {
-      console.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getActions', async () => {
-    try {
-      const result = await helper.getActions('laijiyong123', -1, 0)
-      // console.error('result', JSON.stringify(result))
-      assert.strictEqual(result['actions'].length, 0)
-    } catch (err) {
-      console.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
-  it('getActionsV2', async () => {
-    try {
-      const result = await helper.getActionsV2('https://api.eossweden.org', {
-        account: `laijiyong123`,
-      })
-      // console.error('result', JSON.stringify(result))
-      assert.strictEqual(result.actions.length > 0, true)
-    } catch (err) {
-      console.error(err)
-      assert.throws(() => {}, err)
-    }
-  })
-
   it('getCurrencyStats', async () => {
     try {
       const result = await helper.getCurrencyStats('eosio.token', 'EOS')

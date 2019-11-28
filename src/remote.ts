@@ -1,10 +1,9 @@
 import '@pefish/js-node-assist'
 import ErrorHelper from '@pefish/js-error'
-import BaseEosLike from './base/base_eos'
 import { JsonRpc } from 'pefish-eosjs'
 import fetch from 'node-fetch'
-import HttpRequest from '@pefish/js-util-httprequest'
-export default class EosRemoteHelper extends BaseEosLike {
+import BaseEosLike from './base/base_eos';
+export default class EosRemote extends BaseEosLike {
   rpc: any
   url: string
 
@@ -131,59 +130,6 @@ export default class EosRemoteHelper extends BaseEosLike {
       signatures,
       serializedTransaction: txToSend
     })
-  }
-
-  /**
-   * 读取跟某账户有关的所有交易记录.
-   * @param accountName
-   * @param pos {number} 表示从哪个位置开始取. 从0开始. -1则表示最后一个的后一个, pos-1 offset-1 查到的就是最后一条
-   * @param offset {number} 正表示从pos处向后多取 offset 个，负表示从pos处向前多取 offset 个
-   * @returns {Promise<void>}
-   */
-  async getActions(accountName: string, pos: number = 0, offset: number = 0): Promise<any> {
-    return await this.rpc.history_get_actions(accountName, pos, offset)
-  }
-
-  async getActionsV2(endpoint: string, opts: {
-    account: string,
-    skip?: number,
-    limit?: number,
-    sort?: string,
-  }): Promise<{
-    actions: {
-      act: {
-        authorization: {actor: string, permission: string}[],
-        data: {
-          from: string,
-          to: string,
-          amount: number,
-          symbol: string,
-          memo: string,
-        },
-        account: string,
-        name: string,
-      },
-      [`@timestamp`]: string,
-      block_num: number,
-      producer: string,
-      trx_id: string,
-      global_sequence: number,
-      notified: string[],
-    }[],
-    [x: string]: any,
-  }> {
-    return await HttpRequest.get(`${endpoint}/v2/history/get_actions`, {
-      params: {
-        account: opts.account,
-        skip: opts.skip || 0,
-        limit: opts.limit || 10,
-        sort: opts.sort || `desc`,
-      }
-    })
-  }
-
-  async getTransaction(txHash: string): Promise<any> {
-    return await this.rpc.history_get_transaction(txHash)
   }
 
   /**
