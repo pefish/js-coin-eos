@@ -9,7 +9,7 @@ describe('EosRemoteHelper', () => {
   let helper: Remote
 
   before(async () => {
-    helper = new EosRemoteHelper(`https://eos.greymass.com`)
+    helper = new EosRemoteHelper(`https://api.eossweden.org`)
     global[`logger`] = console
   })
 
@@ -29,6 +29,17 @@ describe('EosRemoteHelper', () => {
       const result = await helper.getChainId()
       // logger.error('result', result)
       assert.strictEqual(result, 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906')
+    } catch (err) {
+      console.error(err)
+      assert.throws(() => {}, err)
+    }
+  })
+
+  it('getTransaction', async () => {
+    try {
+      const result = await helper.getTransaction(`f0733db32b570e16852a0a1032a923c0e3decc67155ed68b1c8afd967459dc64`)
+      // console.error('result', result)
+      assert.strictEqual(result.id, 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906')
     } catch (err) {
       console.error(err)
       assert.throws(() => {}, err)

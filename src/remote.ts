@@ -62,6 +62,10 @@ export default class EosRemote extends BaseEosLike {
     return await this.rpc.get_account(accountName)
   }
 
+  async getTransaction(txId: string): Promise<any> {
+    return await this.rpc.history_get_transaction(txId)
+  }
+
   /**
    * 获取合约账户的abi
    * @param accountName
