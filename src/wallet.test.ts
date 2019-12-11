@@ -8,7 +8,7 @@ describe('EosWalletHelper', () => {
 
   before(async () => {
     helper = new EosWallet()
-    await helper.initRemoteClient(`https://eos.greymass.com`)
+    await helper.initRemoteClient(`https://eos.greymass.com`, [`5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`, `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`])
   })
 
   it('signMsg', async () => {
@@ -184,7 +184,6 @@ describe('EosWalletHelper', () => {
 
   it('signTxHex', async () => {
     try {
-      helper.installPrivateKey([`5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`, `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`])
       const result = await helper.signTxObjForSig(
         JSON.parse(`{"expiration":"2019-01-22T02:20:42.000","ref_block_num":26826,"ref_block_prefix":1912720944,"max_net_usage_words":0,"max_cpu_usage_ms":0,"delay_sec":0,"context_free_actions":[],"actions":[{"account":"eosio.token","name":"transfer","authorization":[{"actor":"laijiyong123","permission":"active"}],"data":"A026FD95DE54AB49304460937AF79C89C05701000000000004454F5300000000046D616D6F"}],"transaction_extensions":[]}`)
         )

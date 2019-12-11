@@ -21,30 +21,26 @@ export default class EosWalletHelper extends BaseEosLike {
     this.chainId = chainId
   }
 
-  initRemoteClient(url: string): void {
+  initRemoteClient(url: string, privateKeys: string[] = []): void {
     this.remoteClient = new EosRemoteHelper(url)
-    this.api = new Api({
-      chainId: this.chainId,
-      rpc: this.remoteClient.rpc,
-      signatureProvider: null,
-      textDecoder: new TextDecoder(),
-      textEncoder: new TextEncoder()
-    })
-  }
-
-  installPrivateKey(privateKeys: string[]): void {
-    if (!this.remoteClient) {
-      throw new ErrorHelper(`please init remote client first`)
+    if (privateKeys.length !== 0) {
+      this.sigProvider = new JsSignatureProvider(privateKeys)
+      this.api = new Api({
+        chainId: this.chainId,
+        rpc: this.remoteClient.rpc,
+        signatureProvider: this.sigProvider,
+        textDecoder: new TextDecoder(),
+        textEncoder: new TextEncoder()
+      })
+    } else {
+      this.api = new Api({
+        chainId: this.chainId,
+        rpc: this.remoteClient.rpc,
+        signatureProvider: null,
+        textDecoder: new TextDecoder(),
+        textEncoder: new TextEncoder()
+      })
     }
-
-    this.sigProvider = new JsSignatureProvider(privateKeys)
-    this.api = new Api({
-      chainId: this.chainId,
-      rpc: this.remoteClient.rpc,
-      signatureProvider: this.sigProvider,
-      textDecoder: new TextDecoder(),
-      textEncoder: new TextEncoder()
-    })
   }
 
   /**
