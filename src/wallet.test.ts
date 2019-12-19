@@ -8,7 +8,7 @@ describe('EosWalletHelper', () => {
 
   before(async () => {
     helper = new EosWallet()
-    await helper.initRemoteClient(`https://eos.greymass.com`, [`5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`, `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`])
+    await helper.initRemoteClient(`https://eos.hyperion.eosrio.io`, [`5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`, `5Hz1Sw8x2haM2xKvuuh5d4MZUkJDnnd3ffVgQQSVYKgBFSN2yWP`])
   })
 
   it('signMsg', async () => {
