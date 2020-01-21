@@ -11,10 +11,11 @@ import ErrorHelper from '@pefish/js-error';
 
 export default class EosWalletHelper extends BaseEosLike {
 
-  remoteClient: EosRemoteHelper
-  sigProvider: JsSignatureProvider
-  api: Api
-  chainId: string
+  public remoteClient: EosRemoteHelper
+  private sigProvider: JsSignatureProvider
+  private api: Api
+  public chainId: string
+  public url: string
 
   constructor(chainId: string = `aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`) {
     super()
@@ -22,6 +23,7 @@ export default class EosWalletHelper extends BaseEosLike {
   }
 
   initRemoteClient(url: string, privateKeys: string[] = []): void {
+    this.url = url
     this.remoteClient = new EosRemoteHelper(url)
     if (privateKeys.length !== 0) {
       this.sigProvider = new JsSignatureProvider(privateKeys)
